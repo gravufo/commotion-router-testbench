@@ -1,8 +1,5 @@
-#!/usr/bin/python
-import sys
 import flash
-import getopt
-import routingTest.testRouting
+import argparse
 
 
 def test_firmware_image(router_list_file):
@@ -38,21 +35,13 @@ def test_firmware_image(router_list_file):
 
 
 if __name__ == "__main__":
-    try:
-        opts, args = getopt.getopt(sys.argv[1], "hi:", "ifile=")
-    except getopt.GetoptError:
-        print 'commotion-router-testbench.py -i <inputfile>'
-        sys.exit(2)
+    parser = argparse.ArgumentParser(
+        description='Validate the Commotion Wireless firmware using real devices connected to their serial console port.')
 
-    if len(opts) == 0:
-        print 'commotion-router-testbench.py -i <inputfile>'
-        sys.exit()
+    parser.add_argument('routers_list_file',
+                        help='File containing the serial port used to control the routers used by the testbench. '
+                             '(One port per router each on it\'s own line)')
+    args = parser.parse_args()
 
-    for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            print 'commotion-router-testbench.py -i <inputfile>'
-            sys.exit()
-        elif opt in ("-i", "--ifile"):
-            input_file = arg
-    test_firmware_image(input_file)
+    test_firmware_image(args.routers_list_file)
     quit()
